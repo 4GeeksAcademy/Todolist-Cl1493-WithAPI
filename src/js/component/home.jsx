@@ -11,9 +11,6 @@ const Home = () => {
 		
 		<div className="text-center">
 			<Todos />
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
 		</div>
 		
 	);
