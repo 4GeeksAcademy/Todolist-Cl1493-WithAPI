@@ -5,6 +5,71 @@ const Todos = () => {
   const [tasksList, setTasksList] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(-1);
 
+  const getTodos = () => {
+    fetch ('https://playground.4geeks.com/apis/fake/todos//user/Carla',{
+      'Content-Type': "application/json"
+    })
+    .then (response => {
+      if (!response.ok) {
+        return createUser();
+      } else {
+        return response.json();
+      }
+    })
+    .then(data => {
+      setTasksList(data);
+    })
+    .catch(error => {
+      console.log('Error', error); 
+    });
+  };
+
+ const createUser = () => {
+  fetch ('https://playground.4geeks.com/apis/fake/todos//user/Carla'),{
+    'method': 'POST',
+    'Content-Type': "application/json",
+    'BODY': JSON.stringify([])
+  }
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
+};
+
+  const updateTodos = () => {
+    fetch ('https://playground.4geeks.com/apis/fake/todos//user/Carla'),{
+    'method': 'PUT',
+    'Content-Type': "application/json",
+    'BODY': JSON.stringify(tasksList)
+  }
+  .then(response => response.json())
+  .then(data => {
+    setTasksList(data);
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
+};
+
+  const deleteTodos = () => {
+    fetch('https://playground.4geeks.com/apis/fake/todos/user/Carla', {
+      'method': 'DELETE',
+      'Content-Type': "application/json"
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      // Limpiar la lista después de eliminar todas las tareas
+      setTasksList([]);
+    })
+    .catch(error => {
+      console.log('Error:', error);
+    });
+  };
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       setTasksList([...tasksList, task]);
@@ -13,8 +78,15 @@ const Todos = () => {
   };
 
   const handleDelete = (index) => {
-    setTasksList(tasksList.filter((_, i) => i !== index));
+    const newTasksList = tasksList.filter((_, i) => i !== index);
+    setTasksList(newTasksList);
+    updateTodos(); // Actualizar lista después de eliminar una tarea
   };
+
+    // Llamar a getTodos al montar el componente
+  useEffect(() => {
+    getTodos();
+  }, []);
 
   return (
     
@@ -46,6 +118,7 @@ const Todos = () => {
           </ul>
         </div>
       </div>
+      <button type="button" className="btn btn-danger" onClick={deleteTodos}> Eliminar todas las tareas </button>
     </div>
   );
 };
